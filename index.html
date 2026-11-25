@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="js/main.js" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=8">
+  <script src="js/main.js?v=3" defer></script>
 </head>
 <body>
 
@@ -35,7 +35,7 @@
         <ul>
           <li><a href="index.html" aria-current="page">Inicio</a></li>
           <li><a href="oferta.html">Nuestra oferta</a></li>
-          <li><a href="como-ayudar.html">¿Cómo ayudar?</a></li>
+          <li><a href="como-ayudar.html">Compra y participa</a></li>
           <li><a href="experiencias.html">Experiencias Eva</a></li>
           <li><a href="conocenos.html">Conócenos</a></li>
           <li><a href="#contacto">Contacto</a></li>
@@ -54,60 +54,55 @@
     <section class="hero" aria-roledescription="carrusel" aria-label="Novedades Eva">
       <div class="slides">
 
-        <article class="slide slide--1 is-active" data-bg="assets/img/banners/banner-1.jpg" aria-roledescription="diapositiva" aria-label="1 de 5">
+        <article class="slide slide--1 slide--art is-active" data-bg="assets/img/banners/banner-1.jpg" aria-roledescription="diapositiva" aria-label="1 de 5">
           <div class="container slide-content">
             <span class="pill">Calendario</span>
             <h2>Agenda Eva<br>de este mes</h2>
             <p>Consulta las fechas de nuestros talleres, encuentros y actividades. ¡Te esperamos!</p>
             <a class="btn btn--light" href="oferta.html#calendario">Ver calendario</a>
           </div>
+          <!-- Ilustración PNG con fondo transparente (si no existe, se quita sola) -->
+          <img class="slide-art" src="assets/img/banners/calendario.png" alt="" onerror="this.remove()">
         </article>
 
-        <article class="slide slide--2" data-bg="assets/img/banners/banner-2.jpg" aria-roledescription="diapositiva" aria-label="2 de 5">
+        <article class="slide slide--2 slide--art" data-bg="assets/img/banners/banner-2.jpg" aria-roledescription="diapositiva" aria-label="2 de 5">
           <div class="container slide-content">
             <span class="pill">Convocatoria abierta</span>
             <h2>Inscríbete en nuestros nuevos talleres</h2>
             <p>Formación práctica para mujeres que quieren aprender, emprender y crecer juntas.</p>
             <a class="btn btn--light" href="oferta.html#talleres">Quiero inscribirme</a>
           </div>
+          <img class="slide-art" src="assets/img/banners/talleres.png" alt="" onerror="this.remove()">
         </article>
 
-        <article class="slide slide--3" data-bg="assets/img/banners/banner-3.jpg" aria-roledescription="diapositiva" aria-label="3 de 5">
+        <article class="slide slide--3 slide--art" data-bg="assets/img/banners/banner-3.jpg" aria-roledescription="diapositiva" aria-label="3 de 5">
           <div class="container slide-content">
             <span class="pill">Tienda Eva</span>
             <h2>Hecho con amor por manos emprendedoras</h2>
             <p>Cada compra en la Tienda Eva impulsa los procesos de formación de nuestra comunidad.</p>
             <a class="btn btn--light" href="como-ayudar.html#tienda">Visitar la tienda</a>
           </div>
+          <img class="slide-art" src="assets/img/banners/tienda.png" alt="" onerror="this.remove()">
         </article>
 
-        <article class="slide slide--4" data-bg="assets/img/banners/banner-4.jpg" aria-roledescription="diapositiva" aria-label="4 de 5">
+        <article class="slide slide--4 slide--art" data-bg="assets/img/banners/banner-4.jpg" aria-roledescription="diapositiva" aria-label="4 de 5">
           <div class="container slide-content">
             <span class="pill">Mensaje Eva</span>
             <h2>Educar es sembrar: cada mujer que aprende transforma su comunidad</h2>
             <a class="btn btn--light" href="conocenos.html">Conócenos</a>
           </div>
+          <img class="slide-art" src="assets/img/banners/educar.png" alt="" onerror="this.remove()">
         </article>
 
-        <article class="slide slide--5" data-bg="assets/img/banners/banner-5.jpg" aria-roledescription="diapositiva" aria-label="5 de 5">
+        <article class="slide slide--5 slide--art" data-bg="assets/img/banners/banner-5.jpg" aria-roledescription="diapositiva" aria-label="5 de 5">
           <div class="container slide-content">
             <span class="pill">Voluntariados</span>
             <h2>Suma tu tiempo y tu talento a la causa</h2>
             <p>Hay muchas formas de ser parte de Eva. Encuentra la tuya.</p>
-            <a class="btn btn--light" href="como-ayudar.html#voluntarios">¿Cómo ayudar?</a>
+            <a class="btn btn--light" href="como-ayudar.html#voluntarios">Compra y participa</a>
           </div>
+          <img class="slide-art" src="assets/img/banners/voluntariados.png" alt="" onerror="this.remove()">
         </article>
-
-        <!-- Ondas decorativas (se ocultan si el banner tiene imagen) -->
-        <svg class="hero-ribbons" viewBox="0 0 600 520" aria-hidden="true" preserveAspectRatio="xMaxYMid slice">
-          <g fill="none" stroke-linecap="round" stroke-width="34">
-            <path d="M20 90 C160 160 300 110 420 70 S560 40 600 70"  stroke="#ffffff" opacity=".28"/>
-            <path d="M20 160 C160 230 300 180 420 140 S560 110 600 140" stroke="#ffffff" opacity=".22"/>
-            <path d="M20 230 C160 300 300 250 420 210 S560 180 600 210" stroke="#ffffff" opacity=".18"/>
-            <path d="M20 300 C160 370 300 320 420 280 S560 250 600 280" stroke="#ffffff" opacity=".14"/>
-            <path d="M20 370 C160 440 300 390 420 350 S560 320 600 350" stroke="#ffffff" opacity=".10"/>
-          </g>
-        </svg>
       </div>
 
       <button class="hero-arrow hero-arrow--prev" aria-label="Banner anterior">
@@ -148,7 +143,9 @@
           <span class="eyebrow">Quiénes somos</span>
           <h2 class="section-title">Somos <span class="hl">Eva Histórica</span></h2>
           <p class="lead">
-            Una asociación de mujeres en Bucaramanga que cree en el poder de aprender juntas.
+            Casa Eva es una asociación comprometida con el desarrollo y empoderamiento de las mujeres.
+            A través de procesos educativos, culturales, sociales y de emprendimiento, promovemos
+            oportunidades que contribuyen a fortalecer su autonomía, participación y calidad de vida.
             Nuestro nombre es también nuestra forma de hacer las cosas:
           </p>
 
@@ -257,7 +254,7 @@
         <ul class="contact-list">
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-            <span>Bucaramanga, Santander</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+31+%2340-66+Mejoras+P%C3%BAblicas+Bucaramanga+Santander" target="_blank" rel="noopener">Carrera 31 #40-66, Mejoras Públicas<br>Bucaramanga, Santander</a>
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>

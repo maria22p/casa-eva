@@ -186,19 +186,30 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
    ========================================================= */
 .hero { position: relative; color: #fff; }
 
+/* Los slides se apilan en la misma celda del grid: el slider toma
+   la altura del slide más alto en vez de recortar el contenido. */
 .slides {
   position: relative;
-  height: clamp(520px, 78vh, 720px);
+  display: grid;
+  min-height: clamp(520px, 78vh, 720px);
+  min-height: clamp(520px, 78svh, 720px);
   overflow: hidden;
   isolation: isolate;
+  /* Ondas decorativas: van en el fondo de cada slide para quedar
+     detrás del texto y de las ilustraciones (la foto las tapa). */
+  --ribbons: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520'%3E%3Cg fill='none' stroke='white' stroke-linecap='round' stroke-width='34'%3E%3Cpath d='M20 90 C160 160 300 110 420 70 S560 40 600 70' opacity='.28'/%3E%3Cpath d='M20 160 C160 230 300 180 420 140 S560 110 600 140' opacity='.22'/%3E%3Cpath d='M20 230 C160 300 300 250 420 210 S560 180 600 210' opacity='.18'/%3E%3Cpath d='M20 300 C160 370 300 320 420 280 S560 250 600 280' opacity='.14'/%3E%3Cpath d='M20 370 C160 440 300 390 420 350 S560 320 600 350' opacity='.10'/%3E%3C/g%3E%3C/svg%3E");
+  --ribbons-size: min(58vw, 760px);
+  --ribbons-x: -4vw;
 }
 
 .slide {
-  position: absolute; inset: 0;
+  position: relative; grid-area: 1 / 1;
   display: flex; align-items: center;
   opacity: 0; visibility: hidden;
   transition: opacity .9s var(--ease), visibility 0s .9s;
-  background: var(--slide-grad);
+  background:
+    var(--ribbons) right var(--ribbons-x) top 42% / var(--ribbons-size) auto no-repeat,
+    var(--slide-grad);
   z-index: 1;
 }
 .slide.is-active { opacity: 1; visibility: visible; transition: opacity .9s var(--ease); z-index: 2; }
@@ -226,18 +237,39 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 .slide--4 { --slide-grad: linear-gradient(120deg, #5f2a7c 0%, #963c8f 60%, #ffa07a 100%); }
 .slide--5 { --slide-grad: linear-gradient(120deg, #4f8f2a 0%, #7fb83e 50%, #9ecc50 100%); }
 
-.slide-content { position: relative; z-index: 3; padding-bottom: 3rem; }
+/* padding-bottom = posición de los puntos + aire, así el botón
+   nunca queda sobre los puntos ni sobre la onda inferior. */
+.slide-content {
+  position: relative; z-index: 3;
+  padding-top: 3rem;
+  padding-bottom: calc(clamp(3.8rem, 7vw, 5.2rem) + 3rem);
+}
 .slide-content > * { max-width: 620px; }
 
 .slide h2 {
-  font-size: clamp(2.2rem, 5.4vw, 4rem);
+  font-size: clamp(2rem, min(5.4vw, 7.5vh), 4rem);
   font-weight: 900;
   letter-spacing: -.02em;
   margin: 1.1rem 0 1rem;
   text-wrap: balance;
 }
 .slide p { font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 520px; margin-bottom: 2rem; opacity: .95; }
-.slide--4 h2 { margin-bottom: 2rem; }
+.slide--4 h2 { margin-bottom: 2rem; max-width: 720px; }
+
+/* Slide con ilustración a la derecha (PNG transparente) */
+.slide--art .slide-content > * { max-width: min(620px, 50%); }
+.slide-art {
+  position: absolute; z-index: 3; top: 46%;
+  right: max(1.25rem, calc((100% - 1200px) / 2));
+  width: min(40vw, 520px); height: auto; max-height: 80%;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0; transform: translateY(-46%) scale(.96);
+}
+.slide.is-active .slide-art {
+  opacity: 1; transform: translateY(-50%);
+  transition: opacity .9s var(--ease) .2s, transform .9s var(--ease) .2s;
+}
 
 .pill {
   display: inline-block;
@@ -278,6 +310,24 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 .hero-arrow:hover { background: rgba(255, 255, 255, .3); transform: scale(1.06); }
 .hero-arrow--prev { left: clamp(.75rem, 2vw, 2rem); }
 .hero-arrow--next { right: clamp(.75rem, 2vw, 2rem); }
+
+/* Entre 961px y 1360px el margen del .container es menor que la flecha:
+   se empuja el contenido para que la flecha "anterior" no tape el texto. */
+@media (min-width: 961px) and (max-width: 1360px) {
+  .slide-content { padding-inline: 4.5rem; }
+  .slide-art { right: 5.75rem; }
+}
+
+/* Celular en horizontal: el slider se ajusta al contenido */
+@media (max-height: 560px) and (orientation: landscape) {
+  .hero .slides { min-height: 0; }
+  .slide-content { padding-top: 2rem; padding-bottom: 5.5rem; }
+  .slide h2 { font-size: clamp(1.6rem, 9vh, 2.4rem); margin: .7rem 0 .6rem; }
+  .slide p { margin-bottom: 1.2rem; }
+  .slide--4 h2 { margin-bottom: 1.2rem; }
+  .pill { padding: .35rem .9rem; font-size: .68rem; }
+  .hero-dots { bottom: 2.6rem; }
+}
 
 .hero-dots {
   position: absolute; left: 50%; bottom: clamp(3.8rem, 7vw, 5.2rem); z-index: 5;
@@ -498,13 +548,20 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
   .about-media { min-height: 360px; max-width: 480px; width: 100%; margin-inline: auto; }
 
   .impact-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(210px, auto); }
+
+  .hero-arrow { display: none; }
+
+  /* En tablet y celular no cabe junto al texto */
+  .slide-art { display: none; }
+  .slide--art .slide-content > * { max-width: 620px; }
 }
 
 @media (max-width: 640px) {
-  .hero-arrow { display: none; }
-  .slides { height: clamp(520px, 86vh, 640px); }
+  .slides {
+    min-height: clamp(520px, 86vh, 640px); min-height: clamp(520px, 86svh, 640px);
+    --ribbons-size: 120vw; --ribbons-x: -48vw;
+  }
   .hero-ribbons { width: 120vw; right: -40%; opacity: .6; }
-  .slide-content { padding-bottom: 5rem; }
 
   .impact-grid { gap: .8rem; grid-auto-rows: minmax(180px, auto); }
   .tile--stat { padding: 1.4rem 1.2rem; }
@@ -544,6 +601,28 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 }
 .page-hero p { font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 560px; opacity: .95; }
 .page-hero .hero-ribbons { transform: translateY(-50%); }
+
+/* Encabezado con ilustración a la derecha (PNG transparente).
+   Uso: clase page-hero--art en la sección + <img class="page-hero-art"> */
+.page-hero--art { min-height: clamp(460px, 70vh, 620px); display: flex; align-items: center; }
+.page-hero--art .container > * { max-width: min(640px, 50%); }
+.page-hero-art {
+  position: absolute; z-index: 3; top: 46%;
+  right: max(1.25rem, calc((100% - 1200px) / 2));
+  width: min(40vw, 540px); height: auto; max-height: 78%;
+  object-fit: contain;
+  transform: translateY(-50%);
+  pointer-events: none;
+  animation: heroArtIn .9s var(--ease) .2s both;
+}
+@keyframes heroArtIn { from { opacity: 0; transform: translateY(-46%) scale(.96); } }
+@media (max-width: 960px) {
+  .page-hero--art { min-height: 0; display: block; }
+  .page-hero--art .container > * { max-width: none; }
+  .page-hero--art .container > h1 { max-width: 760px; }
+  .page-hero--art .container > p { max-width: 560px; }
+  .page-hero-art { display: none; }
+}
 
 .section--alt { background: var(--bg-alt); }
 .section-head p { color: var(--tinta-suave); max-width: 600px; margin: 1rem auto 0; font-size: 1.08rem; }
@@ -809,14 +888,14 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
   color: var(--morado);
 }
 .purpose-statement span { display: block; color: var(--naranja); }
-.purpose-wave { width: min(420px, 80%); height: auto; margin: 1.8rem auto 0; display: block; }
+.purpose-wave { width: min(420px, 80%); height: auto; overflow: visible; margin: 1.8rem auto 0; display: block; }
 .purpose-dot { position: absolute; border-radius: 50%; z-index: -1; }
 .purpose-dot--1 { width: 120px; height: 120px; background: var(--amarillo); opacity: .35; left: 6%; top: 18%; }
 .purpose-dot--2 { width: 70px; height: 70px; background: var(--verde); opacity: .4; right: 10%; top: 12%; }
 .purpose-dot--3 { width: 160px; height: 160px; background: var(--lavanda); opacity: .25; right: 4%; bottom: 6%; }
 
 .mission {
-  position: relative; display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center;
+  position: relative; display: grid; grid-template-columns: clamp(11rem, 22vw, 16rem) 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center;
   background: #fff; border-radius: calc(var(--radius) + 8px);
   padding: clamp(2rem, 5vw, 3.5rem); box-shadow: var(--shadow);
   overflow: hidden; isolation: isolate;
@@ -830,8 +909,10 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
   font-size: clamp(2rem, 4vw, 3rem); color: var(--morado); line-height: 1;
 }
 .mission-label svg { display: block; font-size: 3rem; color: var(--rosa); margin-bottom: .6rem; stroke-width: 1.6; }
-.mission p { font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.6; color: var(--tinta); }
+.mission p { font-size: clamp(1.05rem, 1.7vw, 1.22rem); line-height: 1.65; color: var(--tinta); }
+.mission-text p + p { margin-top: 1rem; }
 .mission p strong { color: var(--morado); }
+.mission + .mission { margin-top: clamp(2.2rem, 5vw, 3.5rem); }
 
 .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
 .pillar {
@@ -847,12 +928,15 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 }
 .pillar--rosa  { --c: var(--rosa); }
 .pillar--verde { --c: var(--verde); }
-.pillar .workshop-icon { background: var(--c); }
+.pillar { text-align: center; }
+.pillar .workshop-icon { background: var(--c); margin-inline: auto; }
+.pillar .chips { justify-content: center; }
 .pillar h3 {
   font-size: .8rem; font-weight: 800; letter-spacing: .3em; text-transform: uppercase;
   color: var(--tinta-suave); margin-bottom: .7rem;
 }
-.pillar-main { font-family: var(--font-display); font-weight: 900; font-size: 1.45rem; line-height: 1.25; color: var(--tinta); }
+.pillar-main { font-family: var(--font-display); font-weight: 900; font-size: 1.3rem; line-height: 1.3; color: var(--tinta); text-transform: uppercase; text-wrap: balance; }
+.pillar-author { display: block; margin-top: 1rem; white-space: nowrap; font-family: var(--font-body); font-weight: 700; font-style: italic; font-size: 1rem; text-transform: none; color: var(--morado); }
 .chips { display: flex; flex-wrap: wrap; gap: .55rem; }
 .chip {
   font-family: var(--font-display); font-weight: 800; font-size: .88rem;
@@ -884,3 +968,81 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
   .cta-band { flex-direction: column; align-items: flex-start; }
   .lightbox-prev, .lightbox-next { top: auto; bottom: 1rem; margin-top: 0; }
 }
+.contact-list li:first-child a { line-height: 1.45; }
+
+/* =========================================================
+   GALERÍA DE VIDEOS — publicaciones de Instagram
+   ========================================================= */
+.ig-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-bottom: 2.4rem; }
+.ig-filter {
+  --c: var(--tinta);
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--font-display); font-weight: 800; font-size: .9rem;
+  padding: .7rem 1.2rem; border-radius: 999px; cursor: pointer;
+  background: #fff; color: var(--c); border: 2px solid transparent;
+  box-shadow: var(--shadow-sm);
+  transition: background-color .25s, color .25s, transform .25s var(--ease);
+}
+.ig-filter span { font-size: .75rem; opacity: .7; }
+.ig-filter:hover { transform: translateY(-2px); }
+.ig-filter--contigo    { --c: var(--morado); }
+.ig-filter--emprende   { --c: #c43d00; }
+.ig-filter--transforma { --c: #c42d78; }
+.ig-filter.is-active { background: var(--c); color: #fff; }
+
+.ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; align-items: start; }
+.ig-card {
+  --c: var(--morado);
+  background: #fff; border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-sm); border-top: 6px solid var(--c);
+  padding: 1rem 1rem 1rem;
+  animation: igIn .5s var(--ease);
+}
+/* Alto uniforme: encabezado + video vertical + barra inferior, proporcional al ancho */
+.ig-frame {
+  container-type: inline-size;
+  height: var(--ig-h, 646px);
+  border-radius: 14px; overflow: hidden;
+  border: 1px solid rgba(51, 16, 47, .08);
+  background: #fff;
+}
+@supports (height: 1cqw) {
+  .ig-frame { --ig-h: auto; height: auto; }
+  .ig-frame > * { height: calc(205px + 125cqw) !important; }
+}
+.ig-card[hidden] { display: none; }
+@keyframes igIn { from { opacity: 0; transform: translateY(16px); } }
+.ig-card--contigo    { --c: var(--morado); }
+.ig-card--emprende   { --c: var(--naranja); }
+.ig-card--transforma { --c: var(--rosa); }
+
+.ig-title {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+  font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--c); margin: .2rem .2rem .9rem;
+}
+.ig-card--transforma .ig-title { color: #c42d78; }
+.ig-card--emprende .ig-title   { color: #c43d00; }
+.ig-title span {
+  font-size: .68rem; letter-spacing: .2em; font-weight: 800;
+  padding: .3rem .7rem; border-radius: 99px; color: var(--tinta);
+  background: color-mix(in srgb, var(--c) 18%, #fff);
+}
+
+/* Espacio reservado mientras carga Instagram */
+.ig-card blockquote {
+  margin: 0 !important; min-width: 0 !important; width: 100% !important; max-width: 100% !important;
+  min-height: 0; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; padding: 0 !important;
+  display: grid; place-items: center;
+  background: linear-gradient(110deg, var(--bg-alt) 30%, #fff 50%, var(--bg-alt) 70%) 0 0 / 300% 100%;
+  animation: igShimmer 1.6s linear infinite;
+}
+.ig-card blockquote a { font-family: var(--font-display); font-weight: 700; font-size: .85rem; color: var(--tinta-suave); }
+@keyframes igShimmer { to { background-position: -150% 0; } }
+.ig-card iframe { display: block; margin: 0 !important; min-width: 0 !important; width: 100% !important; max-width: 100% !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+
+.ig-more { display: flex; justify-content: center; gap: .8rem; flex-wrap: wrap; margin-top: 2.6rem; }
+.ig-more .btn--primary[hidden] { display: none; }
+
+@media (max-width: 960px) { .ig-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .ig-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; } }

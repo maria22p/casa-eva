@@ -261,4 +261,53 @@
       if (lb.dataset.mode === 'photo' && e.key === 'ArrowLeft')  showPhoto(photoIdx - 1);
     });
   }
+
+  /* ---------- Galería de Instagram: filtros + "Ver más" + carga diferida ---------- */
+  const igGrid = document.querySelector('.ig-grid');
+  if (igGrid) {
+    const cards = [...igGrid.querySelectorAll('.ig-card')];
+    const filters = [...document.querySelectorAll('.ig-filter')];
+    const moreBtn = document.querySelector('.ig-more .btn--primary');
+    const PAGE = 6;
+    let filter = 'todos';
+    let shown = PAGE;
+    let igScript = null;
+
+    const processEmbeds = () => {
+      if (window.instgrm) { window.instgrm.Embeds.process(); return; }
+      if (igScript) return;
+      igScript = document.createElement('script');
+      igScript.src = 'https://www.instagram.com/embed.js';
+      igScript.async = true;
+      document.body.appendChild(igScript);
+    };
+
+    const render = () => {
+      const matching = cards.filter((c) => filter === 'todos' || c.dataset.linea === filter);
+      let activated = false;
+      cards.forEach((c) => { c.hidden = true; });
+      matching.slice(0, shown).forEach((c) => {
+        c.hidden = false;
+        const bq = c.querySelector('blockquote.ig-pending');
+        if (bq) { bq.classList.replace('ig-pending', 'instagram-media'); activated = true; }
+      });
+      moreBtn.hidden = matching.length <= shown;
+      if (activated) processEmbeds();
+    };
+
+    filters.forEach((btn) => btn.addEventListener('click', () => {
+      filters.forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-pressed', String(b === btn)); });
+      filter = btn.dataset.filter;
+      shown = PAGE;
+      render();
+    }));
+    moreBtn.addEventListener('click', () => { shown += PAGE; render(); });
+
+    // Carga los videos solo cuando la sección se acerca a la pantalla
+    const igIO = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { render(); igIO.disconnect(); }
+    }, { rootMargin: '400px 0px' });
+    igIO.observe(igGrid);
+    cards.forEach((c, i) => { c.hidden = i >= PAGE; });
+  }
 })();
